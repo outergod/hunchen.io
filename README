@@ -1,0 +1,52 @@
+hunchen.io - Hunchentoot-based socket.io
+========================================
+
+
+Installation
+------------
+hunchen.io is supported by and available through [asdf-install] and (soon)
+[Quicklisp].
+
+
+Support
+-------
+
+
+Usage
+-----
+
+
+Links and References
+--------------------
+Homepage: <http://www.cliki.net/hunchen.io>  
+Hacking:  <http://github.com/e-user/hunchen.io>
+
+[WebSocket]: http://en.wikipedia.org/wiki/WebSocket  
+[edi]: http://weitz.de/  
+[Hunchentoot]: http://weitz.de/hunchentoot/  
+[asdf-install]: http://www.cliki.net/ASDF-Install  
+[Quicklisp]: http://www.quicklisp.org/  
+[draft-hybi-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00  
+[Chromium]: http://www.chromium.org/Home  
+[Firefox]: http://www.mozilla.com/en-US/firefox/new/  
+[hunchen.io]: TBD
+[socket.io]: http://socket.io/
+
+
+
+Copyright
+---------
+Copyright (C) 2011  Alexander Kahl <e-user@fsfe.org>  
+This file is part of hunchen.io.  
+hunchen.io is free software; you can redistribute it and/or modify  
+it under the terms of the GNU Affero General Public License as published by  
+the Free Software Foundation; either version 3 of the License, or  
+(at your option) any later version.  
+
+hunchen.io is distributed in the hope that it will be useful,  
+but WITHOUT ANY WARRANTY; without even the implied warranty of  
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  
+GNU General Public License for more details.  
+
+You should have received a copy of the GNU Affero General Public License  
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
