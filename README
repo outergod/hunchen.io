@@ -82,7 +82,7 @@ hunchen.io:
 ```
 
 TODO endpoints
-```
+```javascript
 var chat = io
   .of('/chat')
   .on('connection', function (socket) {
@@ -104,7 +104,7 @@ var news = io
 ```
 
 TODO volatile
-```
+```javascript
 io.sockets.on('connection', function (socket) {
   var tweets = setInterval(function () {
     getBieberTweet(function (tweet) {
@@ -132,7 +132,7 @@ io.sockets.on('connection', function (socket) {
 ```
 
 TODO broadcasting
-```
+```javascript
 io.sockets.on('connection', function (socket) {
   socket.broadcast.emit('user connected');
 });
