@@ -5,6 +5,11 @@ web server. In effect, it can be used as a drop-in replacement for socket.io's
 server part.
 
 
+WARNING
+-------
+This is work in progress.
+
+
 Installation
 ------------
 hunchen.io is supported by and available through [asdf-install] and (soon)
@@ -82,6 +87,7 @@ hunchen.io:
 ```
 
 TODO endpoints
+
 ```javascript
 var chat = io
   .of('/chat')
@@ -104,6 +110,7 @@ var news = io
 ```
 
 TODO volatile
+
 ```javascript
 io.sockets.on('connection', function (socket) {
   var tweets = setInterval(function () {
@@ -132,6 +139,7 @@ io.sockets.on('connection', function (socket) {
 ```
 
 TODO broadcasting
+
 ```javascript
 io.sockets.on('connection', function (socket) {
   socket.broadcast.emit('user connected');
