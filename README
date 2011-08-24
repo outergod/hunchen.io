@@ -1,5 +1,8 @@
 hunchen.io - Hunchentoot-based socket.io
 ========================================
+hunchen.io provides [socket.io] compatible functionality for the [Hunchentoot]
+web server. In effect, it can be used as a drop-in replacement for socket.io's
+server part.
 
 
 Installation
@@ -10,10 +13,137 @@ hunchen.io is supported by and available through [asdf-install] and (soon)
 
 Support
 -------
+hunchen.io supports the only existing socket.io standard available at the time
+of writing, [version 1] [socket.io-spec]. Of all the available underlying
+transports specified however, only [WebSocket]s are supported, through
+[Hunchensocket]. Multiple endpoints are not implemented at all, currently.
 
 
 Usage
 -----
+Just like Hunchensocket, hunchen.io is meant to be used as a Hunchentoot
+extension. Because of the hard Hunchensocket dependency for WebSockets, you need
+to follow the Hunchentoot
+[documentation](http://www.weitz.de/hunchentoot/#start) but exchange the regular
+`HUNCHENTOOT:ACCEPTOR` and `HUNCHENTOOT:SSL-ACCEPTOR` with
+`HUNCHENSOCKET:WEBSOCKET-ACCEPTOR` and `HUNCHENSOCKET:WEBSOCKET-SSL-ACCEPTOR`,
+respectively.
+
+You'll need at least one socket.io end-point as well which is created by calling
+`DEFINE-SOCKET.IO-HANDLER` passing it a function `λ message` which will be
+called in turn for non-event messages (types 3 and 4 in the 
+[spec] [socket.io-spec]). For event messages (type 5), use 
+`SOCKET.IO-ON EVENT ARGS &BODY BODY` which works just like `DEFUN` except that
+`EVENT` specifies an event name called client-side, as string.
+
+In order to give a more complete example, what follows is basically a
+"translation" of the [socket.io usage sample] (http://socket.io/#how-to-use) to
+hunchen.io:
+
+```lisp
+(start (defparameter *acceptor* (make-instance 'websocket-acceptor)))
+
+(define-socket.io-handler #'(lambda (message)
+                              (declare (ignore message))))
+
+(socket.io-on "connection" (session)
+  (declare (ignore session))
+  (socket.io-emit "news" '((:hello . "world")))
+  (socket.io-on "my other event" (data)
+    (log-message :debug data)))
+```
+
+```lisp
+(start (defparameter *acceptor* (make-instance 'websocket-acceptor)))
+
+(define-socket.io-handler #'(lambda (message)
+                              (declare (ignore message))))
+
+(socket.io-on "connection" (session)
+  (declare (ignore session))
+  (socket.io-on "private message" (from msg)
+    (log-message :debug "I received a private message by ~a saying ~a" from msg))
+  (socket.io-on "disconnect" ()
+    (socket.io-emit "user disconnected")))
+```
+
+```lisp
+(start (defparameter *acceptor* (make-instance 'websocket-acceptor)))
+
+(define-socket.io-handler #'(lambda (message)
+                              (declare (ignore message))))
+
+(socket.io-on "connection" (session)
+  (socket.io-on "set nickname" (name)
+    (setf (getf-session session :nickname) name)
+    (socket.io-emit "ready"))
+  (socket.io-on "msg" ()
+    (log-message :debug "Chat message by ~a" (getf-session session :nickname))))
+```
+
+TODO endpoints
+```
+var chat = io
+  .of('/chat')
+  .on('connection', function (socket) {
+    socket.emit('a message', {
+        that: 'only'
+      , '/chat': 'will get'
+    });
+    chat.emit('a message', {
+        everyone: 'in'
+      , '/chat': 'will get'
+    });
+  });
+
+var news = io
+  .of('/news')
+  .on('connection', function (socket) {
+    socket.emit('item', { news: 'item' });
+  });
+```
+
+TODO volatile
+```
+io.sockets.on('connection', function (socket) {
+  var tweets = setInterval(function () {
+    getBieberTweet(function (tweet) {
+      socket.volatile.emit('bieber tweet', tweet);
+    });
+  }, 100);
+
+  socket.on('disconnect', function () {
+    clearInterval(tweets);
+  });
+});
+```
+
+```lisp
+(start (defparameter *acceptor* (make-instance 'websocket-acceptor)))
+
+(define-socket.io-handler #'(lambda (message)
+                              (declare (ignore message))))
+
+(socket.io-on "connection" (session)
+  (declare (ignore session))
+  (socket.io-on "ferret" (name)
+    (declare (ignore name))
+    "woot"))
+```
+
+TODO broadcasting
+```
+io.sockets.on('connection', function (socket) {
+  socket.broadcast.emit('user connected');
+});
+```
+
+```lisp
+(socket.io-on "connection" (session)
+  (declare (ignore session))
+  (socket.io-on "message" ())
+  (socket.io-on "disconnect" ()))
+```
 
 
 Links and References
@@ -21,16 +151,13 @@ Links and References
 Homepage: <http://www.cliki.net/hunchen.io>  
 Hacking:  <http://github.com/e-user/hunchen.io>
 
-[WebSocket]: http://en.wikipedia.org/wiki/WebSocket  
-[edi]: http://weitz.de/  
+[socket.io]: http://socket.io/
 [Hunchentoot]: http://weitz.de/hunchentoot/  
 [asdf-install]: http://www.cliki.net/ASDF-Install  
 [Quicklisp]: http://www.quicklisp.org/  
-[draft-hybi-00]: http://tools.ietf.org/html/draft-ietf-hybi-thewebsocketprotocol-00  
-[Chromium]: http://www.chromium.org/Home  
-[Firefox]: http://www.mozilla.com/en-US/firefox/new/  
-[hunchen.io]: TBD
-[socket.io]: http://socket.io/
+[socket.io-spec]: https://github.com/LearnBoost/socket.io-spec
+[WebSocket]: http://en.wikipedia.org/wiki/WebSocket  
+[Hunchensocket]: http://cliki.net/Hunchensocket
 
 
 
